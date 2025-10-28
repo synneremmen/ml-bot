@@ -8,6 +8,7 @@ Install the Discord library:
 
 ```bash
 pip install -U discord.py
+pip install dotenv
 ```
 
 ### Setup
