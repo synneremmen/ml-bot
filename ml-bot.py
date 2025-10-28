@@ -53,9 +53,9 @@ async def on_message(message: discord.Message):
         # ensure coffee duration is reasonable and existing
         if kaffe_start_time and kaffe_start_time < kaffe_end_time and (kaffe_end_time - kaffe_start_time) < 2 * 60 * 60:  # less than 2 hours
             minutes = log_event(kaffe_start_time, kaffe_end_time, KAFFE_LOG_FILE)
-            await message.channel.send(f"Kaffepausen er ferdig, @everyone tilbake til arbeidet! Kaffepausen varte i {minutes} minutter.")
+            await message.channel.send(f"Kaffepausen er ferdig, tilbake til arbeidet! Kaffepausen varte i {minutes} minutter.")
         else:
-            await message.channel.send(f"Kaffepausen er ferdig, @everyone tilbake til arbeidet!")
+            await message.channel.send(f"Kaffepausen er ferdig, tilbake til arbeidet!")
     
     elif "$kaffe" in message.content.lower():
         if should_log_kaffe:
@@ -67,9 +67,9 @@ async def on_message(message: discord.Message):
         # ensure lunch duration is reasonable and existing
         if lunsj_start_time and lunsj_start_time < lunsj_end_time and (lunsj_end_time - lunsj_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
             minutes = log_event(lunsj_start_time, lunsj_end_time, LUNSJ_LOG_FILE)
-            await message.channel.send(f"Lunsjpausen er over, @everyone tilbake til arbeidet! Lunsjpausen varte i {minutes} minutter.")
+            await message.channel.send(f"Lunsjpausen er over, tilbake til arbeidet! Lunsjpausen varte i {minutes} minutter.")
         else:
-            await message.channel.send(f"Lunsjpausen er over, @everyone tilbake til arbeidet!")
+            await message.channel.send(f"Lunsjpausen er over, tilbake til arbeidet!")
 
     elif "$lunsj" in message.content.lower():
         if should_log_lunsj:
