@@ -10,12 +10,20 @@ Install the Discord library:
 pip install -U discord.py
 ```
 
-### Usage
+### Setup
 
-Create an .env file and add your DISCORD_TOKEN. 
+Create a bot application at https://discord.com/developers/applications and invite it to your server. 
+Create an `.env` file in the project directory with 
+
+```
+DISCORD_TOKEN=your_bot_token_here
+```
+
+### Usage
 
 Run the bot:
 
 ```bash
 python ml-bot.py
 ```
+
