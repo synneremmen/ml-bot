@@ -12,6 +12,8 @@ pip install -U discord.py
 
 ### Usage
 
+Create an .env file and add your DISCORD_TOKEN. 
+
 Run the bot:
 
 ```bash
