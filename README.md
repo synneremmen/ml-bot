@@ -19,6 +19,14 @@ Create an `.env` file in the project directory with
 ```
 DISCORD_TOKEN=your_bot_token_here
 ```
+To enable logging of your breaks (e.g., lunch and coffee breaks), add the following variables to your `.env` file:
+
+```
+LUNSJ_LOG_FILE=lunsj_log.csv
+KAFFE_LOG_FILE=kaffe_log.csv
+```
+
+These variables specify the file paths where the bot will store the logs for lunch and coffee breaks, respectively.
 
 ### Usage
 
