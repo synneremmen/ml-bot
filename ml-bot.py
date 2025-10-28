@@ -34,7 +34,10 @@ async def on_message(message: discord.Message):
     
     elif "$kaffe" in message.content.lower():
         await message.channel.send(f"Nå har {message.author.mention} lyst på kaffe, så nå må @everyone ta en kaffepause! ☕")
-    
+
+    if "$lunsj" in message.content.lower():
+        await message.channel.send(f"Ding ding ding! {message.author.mention} er sulten, så la oss ta en lunsjpause! @everyone 🍽️")
+
     if "$øl" in message.content.lower():
         await message.channel.send(f"{message.author.mention} trenger en øl, så nå må @everyone stille opp 🍺")
 
