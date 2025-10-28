@@ -26,6 +26,7 @@ async def on_message(message: discord.Message):
             "`$help` - Vis denne hjelpen.\n"
             "`$kaffe` - Start en kaffepause for alle!\n"
             "`$kaffestopp` - Avslutt kaffepausen og få alle tilbake til arbeidet!\n"
+            "`$lunsj` - Start en lunsjpause for alle!\n"
             "`$øl` - Start en ølpause for alle!\n"
         )
 
