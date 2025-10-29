@@ -45,7 +45,7 @@ async def on_message(message: discord.Message):
             "`$kaffestopp` - Avslutt kaffepausen og få alle tilbake til arbeidet!\n"
             "`$lunsj` - Start en lunsjpause for alle!\n"
             "`$lunsjstopp` - Avslutt lunsjpausen og få alle tilbake til arbeidet!\n"
-            "`$øl` - Start en ølpause for alle!\n"
+            "`$øl` - Kall alle inn til en øl!\n"
         )
 
     if "$kaffestopp" in message.content.lower():
