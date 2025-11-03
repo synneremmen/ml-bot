@@ -1,3 +1,4 @@
-kaffe_log.csv
-lunsj_log.csv
+logs
 .env
+__pycache__
+.ipynb_checkpoints

@@ -38,9 +38,10 @@ To enable logging of your breaks (e.g., lunch and coffee breaks), add the follow
 ```
 LUNSJ_LOG_FILE=logs/lunsj_log.csv
 KAFFE_LOG_FILE=logs/kaffe_log.csv
+BORDTENNIS_LOG_FILE=logs/bordtennis_log.csv
 ```
 
-These variables specify the file paths where the bot will store the logs for lunch and coffee breaks, respectively.
+These variables specify the file paths where the bot will store the logs for lunch, coffee and table tennis breaks, respectively.
 
 ### Usage
 
