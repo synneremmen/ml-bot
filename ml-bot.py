@@ -22,6 +22,8 @@ KAFFE_LOG_FILE, should_log_kaffe, kaffe_start_time = init_log_file("KAFFE")
 LUNSJ_LOG_FILE, should_log_lunsj, lunsj_start_time = init_log_file("LUNSJ")
 BORDTENNIS_LOG_FILE, should_log_bordtennis, bordtennis_start_time = init_log_file("BORDTENNIS")
 KONGE_LOG_FILE, _, _ = init_log_file("KONGE", titles=["timestamp", "konge"])
+MONARK_LOG_FILE, _, _ = init_log_file("MONARK", titles=["timestamp", "monark"])
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -47,6 +49,8 @@ async def on_message(message: discord.Message):
             "`$øl` - Kall alle inn til en øl!\n"
             "`$konge` - Nåværende konge av bordtennis\n"
             "`$nykonge @bruker` - Sett en ny konge av bordtennis\n"
+            "`$monark` - Nåværende monark av uno\n"
+            "`$nymonark @bruker` - Sett en ny monark av uno\n"
             ""
             "   Logging kommandoer (hvis aktivert):\n"
             "`$kaffe` - Start en kaffepause for alle!\n"
@@ -127,6 +131,27 @@ async def on_message(message: discord.Message):
             await message.channel.send(f"{new_king} er nå den nye kongen av bordtennis! 👑")
         else:
             await message.channel.send("Vennligst spesifiser en bruker for å sette som ny konge, f.eks. `$nykonge @bruker`.")
+
+    if "$monark" in message.content.lower():
+        if MONARK_LOG_FILE and os.path.exists(MONARK_LOG_FILE):
+            with open(MONARK_LOG_FILE, newline='') as f:
+                reader = csv.reader(f)
+                rows = [row for row in reader if any(cell.strip() for cell in row)]
+            if rows and len(rows) > 1:
+                monark = rows[-1][-1].strip()
+                await message.channel.send(f"Nåværende monark av uno er {monark} 👑")
+            else:
+                await message.channel.send("Det er ingen monark av uno ennå. Sett en med `$nymonark @bruker`.")
+        else:
+            await message.channel.send("Det er ingen monark av uno ennå. Sett en med `$nymonark @bruker`.")
+        
+    if "$nymonark" in message.content.lower():
+        split = message.content.split()
+        if len(split) >= 2:
+            new_monarch = log_event(split[1], MONARK_LOG_FILE, is_time=False)
+            await message.channel.send(f"{new_monarch} er nå den nye monarken av uno! 👑")
+        else:
+            await message.channel.send("Vennligst spesifiser en bruker for å sette som ny monark, f.eks. `$nymonark @bruker`.")
 
     await bot.process_commands(message)
 

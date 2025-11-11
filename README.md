@@ -40,8 +40,14 @@ LUNSJ_LOG_FILE=logs/lunsj_log.csv
 KAFFE_LOG_FILE=logs/kaffe_log.csv
 BORDTENNIS_LOG_FILE=logs/bordtennis_log.csv
 ```
+To use features like Konge (table tennis) and Monark (uno), add the following variables to your `.env` file:
 
-These variables specify the file paths where the bot will store the logs for lunch, coffee and table tennis breaks, respectively.
+```
+KONGE_LOG_FILE=logs/konge_log.csv
+MONARK_LOG_FILE=logs/monark_log.csv
+```
+
+These variables specify the file paths where the bot will store the logs for breaks and winners.
 
 ### Usage
 
