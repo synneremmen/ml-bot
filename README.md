@@ -50,4 +50,12 @@ Run the bot:
 ```bash
 python ml-bot.py
 ```
+### Visualizing
 
+If logging is enabled, you can view plots in `visualize.ipynb`.
+
+To map Discord user mentions to readable names for the plots, add a JSON object to your `.env` file. Example:
+
+```env
+MAP_ID_NAME='{"<@123456789012345678>":"Name","<@987654321098765432>":"Other Name"}'
+```
