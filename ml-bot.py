@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 import time
 import discord
 from discord.ext import commands
@@ -61,7 +62,7 @@ async def on_message(message: discord.Message):
             "`$bordtennisstopp` - Avslutt bordtennis!\n"
         )
 
-    if "$kaffestopp\s" in message.content.lower():
+    if re.search(r'(?i)\$kaffestopp\b', message.content):
         kaffe_end_time = time.time()
         # ensure coffee duration is reasonable and existing
         if kaffe_start_time and kaffe_start_time < kaffe_end_time and (kaffe_end_time - kaffe_start_time) < 2 * 60 * 60:  # less than 2 hours
@@ -71,12 +72,12 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send(f"Kaffepausen er ferdig, tilbake til arbeidet!")
     
-    elif "$kaffe\s" in message.content.lower():
+    elif re.search(r'(?i)\$kaffe\b', message.content):
         if should_log_kaffe:
             kaffe_start_time = time.time()
         await message.channel.send(f"Nå har {message.author.mention} lyst på kaffe, så nå må @everyone ta en kaffepause! ☕")
 
-    if "$lunsjstopp\s" in message.content.lower():
+    if re.search(r'(?i)\$lunsjstopp\b', message.content):
         lunsj_end_time = time.time()
         # ensure lunch duration is reasonable and existing
         if lunsj_start_time and lunsj_start_time < lunsj_end_time and (lunsj_end_time - lunsj_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
@@ -86,12 +87,12 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send(f"Lunsjpausen er over, tilbake til arbeidet!")
 
-    elif "$lunsj\s" in message.content.lower():
+    elif re.search(r'(?i)\$lunsj\b', message.content):
         if should_log_lunsj:
             lunsj_start_time = time.time()
         await message.channel.send(f"Ding ding ding! {message.author.mention} er sulten, så la oss ta en lunsjpause! @everyone 🍽️")
 
-    if "$bordtennisstopp\s" in message.content.lower():
+    if re.search(r'(?i)\$bordtennisstopp\b', message.content):
         bordtennis_end_time = time.time()
         # ensure bordtennis duration is reasonable and existing
         if bordtennis_start_time and bordtennis_start_time < bordtennis_end_time and (bordtennis_end_time - bordtennis_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
@@ -101,7 +102,7 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send(f"Bordtennispausen er over, tilbake til arbeidet!")
 
-    elif "$bordtennis\s" in message.content.lower():
+    elif re.search(r'(?i)\$bordtennis\b', message.content):
         if should_log_bordtennis:
             bordtennis_start_time = time.time()
         await message.channel.send(f"Game on! {message.author.mention} er klar for bordtennis! @everyone 🏓")
