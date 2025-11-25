@@ -41,6 +41,20 @@ async def on_message(message: discord.Message):
 
     if message.author.bot:
         return
+    
+    if message.author.id == 1211781489931452447 and "yesterday's results" in message.content.lower(): # look for worlde bot and results
+        result = message.content.splitlines()
+        print(result[1:])
+        for line in result[1:]:
+            match = re.match(r'(\d+)/6: (.+)', line)
+            if match:
+                score = match.group(1)
+                users = match.group(2).split('. ')
+                for user in users:
+                    user = user.strip()
+                    if user:
+                        log_event(f"{user} - {score}/6", "logs/worlde_results.csv", is_time=False)
+
 
     if "$help" in message.content.lower():
         await message.channel.send(
@@ -154,6 +168,7 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send("Vennligst spesifiser en bruker for å sette som ny monark, f.eks. `$nymonark @bruker`.")
 
+    
     await bot.process_commands(message)
 
 
