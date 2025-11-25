@@ -43,14 +43,12 @@ async def on_message(message: discord.Message):
         return
     
     if message.author.id == 1211781489931452447 and "yesterday's results" in message.content.lower(): # look for worlde bot and results
-        print("Found wordle results!")
         result = message.content.splitlines()
-        print(result[1:])
         for line in result[1:]:
             match = re.match(r'^\s*(?:👑\s*)?(\d+)/6:\s*(.+)', line)
             if match:
                 score = match.group(1)
-                users = match.group(2).split('. ')
+                users = match.group(2).split(' ')
                 for user in users:
                     user = user.strip()
                     if user:
