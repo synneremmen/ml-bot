@@ -46,7 +46,7 @@ async def on_message(message: discord.Message):
         result = message.content.splitlines()
         print(result[1:])
         for line in result[1:]:
-            match = re.match(r'(\d+)/6: (.+)', line)
+            match = re.match(r'^\s*(?:👑\s*)?(\d+)/6:\s*(.+)', line)
             if match:
                 score = match.group(1)
                 users = match.group(2).split('. ')
