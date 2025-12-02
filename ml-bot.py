@@ -33,7 +33,21 @@ bot = commands.Bot(command_prefix="$", intents=intents, help_command=None)
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} (id: {bot.user.id})")
+    bot.loop.create_task(julekalender_task())
 
+async def julekalender_task():
+    await bot.wait_until_ready()
+    channel = discord.utils.get(bot.get_all_channels(), name="general")
+    if channel is None:
+        print("Could not find channel 'general' for julekalender task.")
+        return
+    while not bot.is_closed():
+        now = datetime.datetime.now()
+        if now.month == 12 and 1 <= now.day <= 12 and now.hour == 13 and now.minute == 20:
+            await channel.send("@everyone Det er på tide å åpne julekalenderen! 🎄")
+        await discord.utils.sleep_until(
+            datetime.datetime.combine(now.date() + datetime.timedelta(days=1), datetime.time(13, 20))
+        )
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -42,10 +56,6 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
     
-    now = datetime.datetime.now()
-    if now.month == 12 and 1 <= now.day <= 12 and now.hour == 13 and now.minute == 20:
-        await message.channel.send("@everyone Det er på tide å åpne julekalenderen! 🎄")
-
     print(f"Received message from {message.author} with id {message.author.id}: {message.content}")
     if message.author.id in [1211781489931452447, 1445290172110602321] and "yesterday's results" in message.content.lower(): # look for worlde bot and results
         print("Detected Wordle results message.")
