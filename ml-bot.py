@@ -43,10 +43,10 @@ async def julekalender_task():
         return
     while not bot.is_closed():
         now = datetime.datetime.now()
-        if now.month == 12 and 1 <= now.day <= 12 and now.hour == 13 and now.minute == 20:
+        if now.month == 12 and 1 <= now.day <= 12 and now.hour == 13 and now.minute == 30:
             await channel.send("@everyone Det er på tide å åpne julekalenderen! 🎄")
         await discord.utils.sleep_until(
-            datetime.datetime.combine(now.date() + datetime.timedelta(days=1), datetime.time(13, 20))
+            datetime.datetime.combine(now.date() + datetime.timedelta(days=1), datetime.time(13, 30))
         )
 
 @bot.event
