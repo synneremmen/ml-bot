@@ -44,7 +44,7 @@ async def on_message(message: discord.Message):
     
     now = datetime.datetime.now()
     if now.month == 12 and 1 <= now.day <= 12 and now.hour == 13 and now.minute == 20:
-        await message.channel.send("Det er på tide å åpne julekalenderen! 🎄")
+        await message.channel.send("@everyone Det er på tide å åpne julekalenderen! 🎄")
 
     print(f"Received message from {message.author} with id {message.author.id}: {message.content}")
     if message.author.id in [1211781489931452447, 1445290172110602321] and "yesterday's results" in message.content.lower(): # look for worlde bot and results
