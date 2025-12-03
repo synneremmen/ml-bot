@@ -136,6 +136,9 @@ async def on_message(message: discord.Message):
             bordtennis_start_time = time.time()
         await message.channel.send(f"Game on! {message.author.mention} er klar for bordtennis! @everyone 🏓")
 
+    if re.search(r'(?i)\$kalender\b', message.content):
+        await message.channel.send(f"God dag @everyone! Alle store og små troll må bevege seg til Mimmi, for nå skal vi åpne julekalenderen! 🎄")
+
 
     if "$øl" in message.content.lower():
         await message.channel.send(f"{message.author.mention} trenger en øl, så nå må @everyone stille opp 🍺")
