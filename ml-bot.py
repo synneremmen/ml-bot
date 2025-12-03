@@ -77,6 +77,7 @@ async def on_message(message: discord.Message):
             "Bruk følgende kommandoer:\n"
             "`$help` - Vis denne hjelpen.\n"
             "`$øl` - Kall alle inn til en øl!\n"
+            "`$kalender` - Kall alle inn til å åpne julekalenderen!\n"
             "`$konge` - Nåværende konge av bordtennis\n"
             "`$nykonge @bruker` - Sett en ny konge av bordtennis\n"
             "`$monark` - Nåværende monark av uno\n"
