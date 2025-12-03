@@ -49,6 +49,11 @@ MONARK_LOG_FILE=logs/monark_log.csv
 
 These variables specify the file paths where the bot will store the logs for breaks and winners.
 
+To inspect messages from other bots, include the following in the .env file
+```
+ALLOWED_BOT_IDS=xxxxxxxxxxx,yyyyyyyyyyy
+```
+
 ### Usage
 
 Run the bot:
