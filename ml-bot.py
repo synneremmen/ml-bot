@@ -24,7 +24,7 @@ LUNSJ_LOG_FILE, should_log_lunsj, lunsj_start_time = init_log_file("LUNSJ")
 BORDTENNIS_LOG_FILE, should_log_bordtennis, bordtennis_start_time = init_log_file("BORDTENNIS")
 KONGE_LOG_FILE, _, _ = init_log_file("KONGE", titles=["timestamp", "konge"])
 MONARK_LOG_FILE, _, _ = init_log_file("MONARK", titles=["timestamp", "monark"])
-
+ALLOWED_BOT_IDS = [int(bot_id) for bot_id in os.getenv("ALLOWED_BOT_IDS").split(",")]
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -52,13 +52,12 @@ async def julekalender_task():
 @bot.event
 async def on_message(message: discord.Message):
     global kaffe_start_time, lunsj_start_time, bordtennis_start_time
-    ALLOWED_BOT_IDS = 1211781489931452447
 
-    if message.author.bot and message.author.id is not ALLOWED_BOT_IDS:
+    if message.author.bot and message.author.id not in ALLOWED_BOT_IDS:
         return
     
     print(f"Received message from {message.author} with id {message.author.id}: {message.content}")
-    if message.author.id in [1211781489931452447, 1445290172110602321] and "yesterday's results" in message.content.lower(): # look for worlde bot and results
+    if message.author.id in ALLOWED_BOT_IDS and "yesterday's results" in message.content.lower(): # look for worlde bot and results
         print("Detected Wordle results message.")
         result = message.content.splitlines()
         for line in result[1:]: # first line is an unrelevant message
