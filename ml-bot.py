@@ -52,8 +52,9 @@ async def julekalender_task():
 @bot.event
 async def on_message(message: discord.Message):
     global kaffe_start_time, lunsj_start_time, bordtennis_start_time
+    ALLOWED_BOT_IDS = 1211781489931452447
 
-    if message.author.bot:
+    if message.author.bot and message.author.id is not ALLOWED_BOT_IDS:
         return
     
     print(f"Received message from {message.author} with id {message.author.id}: {message.content}")
