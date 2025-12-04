@@ -33,21 +33,6 @@ bot = commands.Bot(command_prefix="$", intents=intents, help_command=None)
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} (id: {bot.user.id})")
-    bot.loop.create_task(julekalender_task())
-
-async def julekalender_task():
-    await bot.wait_until_ready()
-    channel = discord.utils.get(bot.get_all_channels(), name="general")
-    if channel is None:
-        print("Could not find channel 'general' for julekalender task.")
-        return
-    while not bot.is_closed():
-        now = datetime.datetime.now()
-        if now.month == 12 and 1 <= now.day <= 12 and now.hour == 10 and now.minute == 00:
-            await channel.send("@everyone Det er på tide å åpne julekalenderen! 🎄")
-        await discord.utils.sleep_until(
-            datetime.datetime.combine(now.date() + datetime.timedelta(days=1), datetime.time(10, 00))
-        )
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -56,9 +41,7 @@ async def on_message(message: discord.Message):
     if message.author.bot and message.author.id not in ALLOWED_BOT_IDS:
         return
     
-    print(f"Received message from {message.author} with id {message.author.id}: {message.content}")
     if message.author.id in ALLOWED_BOT_IDS and "yesterday's results" in message.content.lower(): # look for worlde bot and results
-        print("Detected Wordle results message.")
         result = message.content.splitlines()
         for line in result[1:]: # first line is an unrelevant message
             match = re.match(r'^\s*(?:👑\s*)?(\d+)/6:\s*(.+)', line)
@@ -138,7 +121,7 @@ async def on_message(message: discord.Message):
         await message.channel.send(f"Game on! {message.author.mention} er klar for bordtennis! @everyone 🏓")
 
     if re.search(r'(?i)\$kalender\b', message.content):
-        await message.channel.send(f"God dag @everyone! Alle store og små troll må bevege seg til Mimmi, for nå skal vi åpne julekalenderen! 🎄")
+        await message.channel.send(f"God {datetime.datetime.now().day}. desember @everyone! Alle store og små troll må bevege seg til Mimmi, for nå skal vi åpne julekalenderen! 🎄")
 
 
     if "$øl" in message.content.lower():
