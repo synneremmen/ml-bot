@@ -110,18 +110,18 @@ async def on_message(message: discord.Message):
         await message.channel.send(f"Ding ding ding! {message.author.mention} er sulten, så la oss ta en lunsjpause! @everyone 🍽️")
 
     if re.search(r'(?i)\$bordtennisstopp\b', message.content):
-        bordtennis_end_time = time.time()
         if tournament_list:
             mentions, tournament_list = get_tournament_mentions(tournament_list, MAX_TOURNAMENT_PARTICIPANTS)
             await message.channel.send(f"På tide med en ny gruppe! {mentions} - Gjør dere klare for bordtennis! 🏓")
 
-        # if no tournament ongoing, log duration: ensure bordtennis duration is reasonable and existing
-        elif bordtennis_start_time and bordtennis_start_time < bordtennis_end_time and (bordtennis_end_time - bordtennis_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
-            duration = int(bordtennis_end_time - bordtennis_start_time)
-            minutes = log_event(duration, BORDTENNIS_LOG_FILE)
-            await message.channel.send(f"Bordtennispausen er over, tilbake til arbeidet! Bordtennispausen varte i {minutes} minutter.")
-        else:
-            await message.channel.send(f"Bordtennispausen er over, tilbake til arbeidet!")
+        else: # if no tournament ongoing, log duration: ensure bordtennis duration is reasonable and existing
+            bordtennis_end_time = time.time()
+            if bordtennis_start_time and bordtennis_start_time < bordtennis_end_time and (bordtennis_end_time - bordtennis_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
+                duration = int(bordtennis_end_time - bordtennis_start_time)
+                minutes = log_event(duration, BORDTENNIS_LOG_FILE)
+                await message.channel.send(f"Bordtennispausen er over, tilbake til arbeidet! Bordtennispausen varte i {minutes} minutter.")
+            else:
+                await message.channel.send(f"Bordtennispausen er over, tilbake til arbeidet!")
 
     elif re.search(r'(?i)\$bordtennis\b', message.content):
         if should_log_bordtennis:
