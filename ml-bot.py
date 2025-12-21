@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 load_dotenv()
-from utils import initialize_log_file, log_event
+from utils import get_tournament_mentions, initialize_log_file, log_event
 import csv
 
 def init_log_file(name, titles=["timestamp", "duration_seconds"]):
@@ -25,6 +25,8 @@ BORDTENNIS_LOG_FILE, should_log_bordtennis, bordtennis_start_time = init_log_fil
 KONGE_LOG_FILE, _, _ = init_log_file("KONGE", titles=["timestamp", "konge"])
 MONARK_LOG_FILE, _, _ = init_log_file("MONARK", titles=["timestamp", "monark"])
 ALLOWED_BOT_IDS = [int(bot_id) for bot_id in os.getenv("ALLOWED_BOT_IDS").split(",")]
+MAX_TOURNAMENT_PARTICIPANTS = 6
+tournament_list = []
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -37,6 +39,7 @@ async def on_ready():
 @bot.event
 async def on_message(message: discord.Message):
     global kaffe_start_time, lunsj_start_time, bordtennis_start_time
+    global tournament_list
 
     if message.author.bot and message.author.id not in ALLOWED_BOT_IDS:
         return
@@ -65,14 +68,15 @@ async def on_message(message: discord.Message):
             "`$nykonge @bruker` - Sett en ny konge av bordtennis\n"
             "`$monark` - Nåværende monark av uno\n"
             "`$nymonark @bruker` - Sett en ny monark av uno\n"
+            "`$deltaker` - Legg deg selv til som deltaker i bordtennisturneringen!\n"
             ""
             "   Logging kommandoer (hvis aktivert):\n"
             "`$kaffe` - Start en kaffepause for alle!\n"
             "`$kaffestopp` - Avslutt kaffepausen og få alle tilbake til arbeidet!\n"
             "`$lunsj` - Start en lunsjpause for alle!\n"
             "`$lunsjstopp` - Avslutt lunsjpausen og få alle tilbake til arbeidet!\n"
-            "`$bordtennis` - Kall alle inn til bordtennis!\n"
-            "`$bordtennisstopp` - Avslutt bordtennis!\n"
+            "`$bordtennis` - Kall alle inn til bordtennis! Hvis flere enn maks deltakere, blir det delt inn i grupper Husk å avslutte runden/spillet med $bordtennisstopp!.\n"
+            "`$bordtennisstopp` - Hvis en turnering pågår, henter dette en ny gruppe. Ellers, avslutt bordtennis!\n"
         )
 
     if re.search(r'(?i)\$kaffestopp\b', message.content):
@@ -107,8 +111,12 @@ async def on_message(message: discord.Message):
 
     if re.search(r'(?i)\$bordtennisstopp\b', message.content):
         bordtennis_end_time = time.time()
-        # ensure bordtennis duration is reasonable and existing
-        if bordtennis_start_time and bordtennis_start_time < bordtennis_end_time and (bordtennis_end_time - bordtennis_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
+        if tournament_list:
+            mentions, tournament_list = get_tournament_mentions(tournament_list, MAX_TOURNAMENT_PARTICIPANTS)
+            await message.channel.send(f"På tide med en ny gruppe! {mentions} - Gjør dere klare for bordtennis! 🏓")
+
+        # if no tournament ongoing, log duration: ensure bordtennis duration is reasonable and existing
+        elif bordtennis_start_time and bordtennis_start_time < bordtennis_end_time and (bordtennis_end_time - bordtennis_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
             duration = int(bordtennis_end_time - bordtennis_start_time)
             minutes = log_event(duration, BORDTENNIS_LOG_FILE)
             await message.channel.send(f"Bordtennispausen er over, tilbake til arbeidet! Bordtennispausen varte i {minutes} minutter.")
@@ -118,7 +126,17 @@ async def on_message(message: discord.Message):
     elif re.search(r'(?i)\$bordtennis\b', message.content):
         if should_log_bordtennis:
             bordtennis_start_time = time.time()
-        await message.channel.send(f"Game on! {message.author.mention} er klar for bordtennis! @everyone 🏓")
+
+        if tournament_list:
+            mentions, tournament_list = get_tournament_mentions(tournament_list, MAX_TOURNAMENT_PARTICIPANTS)
+            await message.channel.send(f"{mentions} - Gjør dere klare for bordtennis! 🏓")
+        else:
+            await message.channel.send(f"Game on! {message.author.mention} er klar for bordtennis! @everyone 🏓")
+
+    if re.search(r'(?i)\$deltaker\b', message.content):
+        participant = message.author            
+        tournament_list.append(participant)
+        await message.channel.send(f"{participant.mention} er lagt til som deltaker i turneringen!")
 
     if re.search(r'(?i)\$kalender\b', message.content):
         await message.channel.send(f"God {datetime.datetime.now().day}. desember @everyone! Alle store og små troll må bevege seg til Mimmi, for nå skal vi åpne julekalenderen! 🎄")
