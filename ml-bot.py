@@ -134,9 +134,12 @@ async def on_message(message: discord.Message):
             await message.channel.send(f"Game on! {message.author.mention} er klar for bordtennis! @everyone 🏓")
 
     if re.search(r'(?i)\$deltaker\b', message.content):
-        participant = message.author            
-        tournament_list.append(participant)
-        await message.channel.send(f"{participant.mention} er lagt til som deltaker i turneringen!")
+        participant = message.author        
+        if participant not in tournament_list:    
+            tournament_list.append(participant)
+            await message.channel.send(f"{participant.mention} er lagt til som deltaker i turneringen!")
+        else:
+            await message.channel.send(f"{participant.mention}, du er allerede registrert som deltaker i turneringen!")
 
     if re.search(r'(?i)\$kalender\b', message.content):
         await message.channel.send(f"God {datetime.datetime.now().day}. desember @everyone! Alle store og små troll må bevege seg til Mimmi, for nå skal vi åpne julekalenderen! 🎄")
