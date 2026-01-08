@@ -191,9 +191,6 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send("Vennligst spesifiser en bruker for å sette som ny monark, f.eks. `$nymonark @bruker`.")
 
-    
-    await bot.process_commands(message)
-
 
 if __name__ == "__main__":
     if not DISCORD_TOKEN:
