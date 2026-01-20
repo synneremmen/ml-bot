@@ -9,7 +9,7 @@ load_dotenv()
 from utils import get_tournament_mentions, initialize_log_file, log_event
 import csv
 
-def init_log_file(name, titles=["timestamp", "duration_seconds"]):
+def get_log_file(name, titles=["timestamp", "duration"]):
     should_log = True if os.getenv(f"{name}_LOG_FILE") is not None else False
     if should_log:
         LOG_FILE = os.getenv(f"{name}_LOG_FILE")
@@ -19,13 +19,14 @@ def init_log_file(name, titles=["timestamp", "duration_seconds"]):
     return None, False
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-KAFFE_LOG_FILE, should_log_kaffe, kaffe_start_time = init_log_file("KAFFE")
-LUNSJ_LOG_FILE, should_log_lunsj, lunsj_start_time = init_log_file("LUNSJ")
-BORDTENNIS_LOG_FILE, should_log_bordtennis, bordtennis_start_time = init_log_file("BORDTENNIS")
-KONGE_LOG_FILE, _, _ = init_log_file("KONGE", titles=["timestamp", "konge"])
-MONARK_LOG_FILE, _, _ = init_log_file("MONARK", titles=["timestamp", "monark"])
+KAFFE_LOG_FILE, should_log_kaffe, kaffe_start_time = get_log_file("KAFFE")
+LUNSJ_LOG_FILE, should_log_lunsj, lunsj_start_time = get_log_file("LUNSJ")
+BORDTENNIS_LOG_FILE, should_log_bordtennis, bordtennis_start_time = get_log_file("BORDTENNIS")
+KONGE_LOG_FILE, _, _ = get_log_file("KONGE", titles=["timestamp", "konge"])
+MONARK_LOG_FILE, _, _ = get_log_file("MONARK", titles=["timestamp", "monark"])
+WORDLE_LOG_FILE, _, _ = get_log_file("WORDLE", titles=["timestamp", "stats"])
 ALLOWED_BOT_IDS = [int(bot_id) for bot_id in os.getenv("ALLOWED_BOT_IDS").split(",")]
-MAX_TOURNAMENT_PARTICIPANTS = 6
+MAX_TOURNAMENT_PARTICIPANTS = 5
 tournament_list = []
 
 intents = discord.Intents.default()
@@ -54,7 +55,7 @@ async def on_message(message: discord.Message):
                 for user in users:
                     user = user.strip()
                     if user:
-                        log_event(f"{user} - {score}/6", "logs/worlde_results.csv", is_time=False)
+                        log_event(f"{user} - {score}/6", WORDLE_LOG_FILE, is_time=False)
 
 
     if "$help" in message.content.lower():
