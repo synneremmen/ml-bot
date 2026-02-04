@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from utils import get_tournament_mentions, initialize_log_file, log_event
 import csv
+import editdistance
 
 def get_log_file(name, titles=["timestamp", "duration"]):
     should_log = True if os.getenv(f"{name}_LOG_FILE") is not None else False
@@ -42,6 +43,8 @@ async def on_message(message: discord.Message):
     global kaffe_start_time, lunsj_start_time, bordtennis_start_time
     global tournament_list
 
+    command = re.search(r'\$([A-Za-z]+)\b', message.content).group(1) if re.search(r'\$([A-Za-z]+)\b', message.content) else ""
+
     if message.author.bot and message.author.id not in ALLOWED_BOT_IDS:
         return
     
@@ -58,32 +61,27 @@ async def on_message(message: discord.Message):
                         log_event(f"{user} - {score}/6", WORDLE_LOG_FILE, is_time=False)
 
 
-    if "$help" in message.content.lower():
+    if editdistance.eval(command, "help") <= 2:
         await message.channel.send(
             "Hei! Jeg er en enkel bot som hjelper med kaffepauser og ølpauser.\n"
             "Bruk følgende kommandoer:\n"
             "`$help` - Vis denne hjelpen.\n"
             "`$øl` - Kall alle inn til en øl!\n"
             "`$kalender` - Kall alle inn til å åpne julekalenderen!\n"
-            "\n"
             "`$monark` - Nåværende monark av uno\n"
             "`$nymonark @bruker` - Sett en ny monark av uno\n"
-            "\n"
             "`$kaffe` - Start en kaffepause for alle!\n"
             "`$kaffestopp` - Avslutt kaffepausen og få alle tilbake til arbeidet!\n"
-            "\n"
             "`$lunsj` - Start en lunsjpause for alle!\n"
             "`$lunsjstopp` - Avslutt lunsjpausen og få alle tilbake til arbeidet!\n"
-            "\n"
             "`$konge` - Nåværende konge av bordtennis\n"
             "`$nykonge @bruker` - Sett en ny konge av bordtennis\n"
-            "\n"
             "`$deltaker` - Legg deg selv til som deltaker i bordtennisturneringen!\n"
             "`$bordtennis` - Kall alle inn til bordtennis! Hvis flere enn maks deltakere, blir det delt inn i grupper. Husk å avslutte runden/spillet med $bordtennisstopp!\n"
             "`$bordtennisstopp` - Hvis en turnering pågår, henter dette en ny gruppe. Ellers, avslutt bordtennis!\n"
         )
 
-    if re.search(r'(?i)\$kaffestopp\b', message.content):
+    if editdistance.eval(command, "kaffestopp") <= 2:
         kaffe_end_time = time.time()
         # ensure coffee duration is reasonable and existing
         if kaffe_start_time and kaffe_start_time < kaffe_end_time and (kaffe_end_time - kaffe_start_time) < 2 * 60 * 60:  # less than 2 hours
@@ -93,12 +91,12 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send(f"Kaffepausen er ferdig, tilbake til arbeidet!")
     
-    elif re.search(r'(?i)\$kaffe\b', message.content):
+    elif editdistance.eval(command, "kaffe") <= 2:
         if should_log_kaffe:
             kaffe_start_time = time.time()
         await message.channel.send(f"Nå har {message.author.mention} lyst på kaffe, så nå må @everyone ta en kaffepause! ☕")
 
-    if re.search(r'(?i)\$lunsjstopp\b', message.content):
+    if editdistance.eval(command, "lunsjstopp") <= 2:
         lunsj_end_time = time.time()
         # ensure lunch duration is reasonable and existing
         if lunsj_start_time and lunsj_start_time < lunsj_end_time and (lunsj_end_time - lunsj_start_time) < 1.5 * 60 * 60:  # less than 1.5 hours
@@ -108,12 +106,12 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send(f"Lunsjpausen er over, tilbake til arbeidet!")
 
-    elif re.search(r'(?i)\$lunsj\b', message.content):
+    elif editdistance.eval(command, "lunsj") <= 2:
         if should_log_lunsj:
             lunsj_start_time = time.time()
         await message.channel.send(f"Ding ding ding! {message.author.mention} er sulten, så la oss ta en lunsjpause! @everyone 🍽️")
 
-    if re.search(r'(?i)\$bordtennisstopp\b', message.content):
+    if editdistance.eval(command, "bordtennisstopp") <= 2:
         if tournament_list:
             mentions, tournament_list = get_tournament_mentions(tournament_list, MAX_TOURNAMENT_PARTICIPANTS)
             await message.channel.send(f"På tide med en ny gruppe! {mentions} - Gjør dere klare for bordtennis! 🏓")
@@ -127,7 +125,7 @@ async def on_message(message: discord.Message):
             else:
                 await message.channel.send(f"Bordtennispausen er over, tilbake til arbeidet!")
 
-    elif re.search(r'(?i)\$bordtennis\b', message.content):
+    elif editdistance.eval(command, "bordtennis") <= 2:
         if should_log_bordtennis:
             bordtennis_start_time = time.time()
 
@@ -137,7 +135,7 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send(f"Game on! {message.author.mention} er klar for bordtennis! @everyone 🏓")
 
-    if re.search(r'(?i)\$deltaker\b', message.content):
+    if editdistance.eval(command, "deltaker") <= 2:
         participant = message.author        
         if participant not in tournament_list:    
             tournament_list.append(participant)
@@ -145,7 +143,7 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send(f"{participant.mention}, du er allerede registrert som deltaker i turneringen!")
 
-    if re.search(r'(?i)\$kalender\b', message.content):
+    if editdistance.eval(command, "kalender") <= 2:
         await message.channel.send(f"God {datetime.datetime.now().day}. desember @everyone! Alle store og små troll må bevege seg til Mimmi, for nå skal vi åpne julekalenderen! 🎄")
 
 
@@ -153,7 +151,7 @@ async def on_message(message: discord.Message):
         await message.channel.send(f"{message.author.mention} trenger en øl, så nå må @everyone stille opp 🍺")
 
 
-    if "$konge" in message.content.lower():
+    if editdistance.eval(command, "konge") <= 1:
         if KONGE_LOG_FILE and os.path.exists(KONGE_LOG_FILE):
             with open(KONGE_LOG_FILE, newline='') as f:
                 reader = csv.reader(f)
@@ -166,7 +164,7 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send("Det er ingen konge av bordtennis ennå. Sett en med `$nykonge @bruker`.")
 
-    if "$nykonge" in message.content.lower():
+    if editdistance.eval(command, "nykonge") <= 1:
         split = message.content.split()
         if len(split) >= 2:
             new_king = log_event(split[1], KONGE_LOG_FILE, is_time=False)
@@ -174,7 +172,7 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send("Vennligst spesifiser en bruker for å sette som ny konge, f.eks. `$nykonge @bruker`.")
 
-    if "$monark" in message.content.lower():
+    if editdistance.eval(command, "monark") <= 1:
         if MONARK_LOG_FILE and os.path.exists(MONARK_LOG_FILE):
             with open(MONARK_LOG_FILE, newline='') as f:
                 reader = csv.reader(f)
@@ -187,7 +185,7 @@ async def on_message(message: discord.Message):
         else:
             await message.channel.send("Det er ingen monark av uno ennå. Sett en med `$nymonark @bruker`.")
         
-    if "$nymonark" in message.content.lower():
+    if editdistance.eval(command, "nymonark") <= 1:
         split = message.content.split()
         if len(split) >= 2:
             new_monarch = log_event(split[1], MONARK_LOG_FILE, is_time=False)
