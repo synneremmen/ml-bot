@@ -19,6 +19,8 @@ def log_event(information, filename, is_time=True):
     return information  
 
 def get_data(filename):
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"File {filename} does not exist.")
     with open(filename, "r") as file:
         csvdata = csv.reader(file)
         data = [row for row in csvdata]
@@ -48,7 +50,7 @@ def get_tournament_mentions(tournament_list, MAX_TOURNAMENT_PARTICIPANTS, filena
 
         def get_participant_count(participant):
             try: 
-                index = get_names.index(f'<@{participant.id}>')
+                index = get_names.index(participant)
                 return get_counts[index]
             except:
                 return 0  # participants is not in the ratings
